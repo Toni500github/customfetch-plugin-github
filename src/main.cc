@@ -35,7 +35,7 @@ APICALL EXPORT MOD_INIT(void *handle, const ConfigBase& config)
         die("is github down?");
     json.Parse(resp.text.c_str());
 
-    warn("i'm a plugin and the value for config.source-path is {}", config.getValue("config.source-path", 5));
+    warn("i'm a plugin and the value for config.source-path is {}", config.getValue<std::string>("config.source-path", "tit"));
 
     module_t github_name_module {"name", "profile username", {}, github_name};
     module_t github_followers_module {"followers", "profile followers", {}, github_followers};
