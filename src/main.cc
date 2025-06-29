@@ -2,6 +2,7 @@
 #include <cufetch/cufetch.hh>
 
 #include <cpr/cpr.h>
+#include <cstdlib>
 #include <rapidjson/document.h>
 #include <string>
 
@@ -17,20 +18,27 @@ MODFUNC(github_bio)
 MODFUNC(github_name)
 { return json["login"].GetString(); }
 
+static cpr::Header get_github_token()
+{
+    const char *github_token = std::getenv("GITHUB_TOKEN");
+    if (github_token && github_token[0] != '\0')
+        return {{"Autorization", github_token}};
+    return {{}};
+}
+
 APICALL EXPORT MOD_INIT(void *handle)
 {
-    const cpr::Response& resp = cpr::Get(cpr::Url("https://api.github.com/users/Toni500github"));
+    const cpr::Response& resp = cpr::Get(cpr::Url("https://api.github.com/users/Toni500github"),
+                                         get_github_token());
     if (resp.status_code != 200)
         die("is github down?");
     json.Parse(resp.text.c_str());
 
-    module_t test = {"test", {}, [](const callbackInfo_t* callback) {return parse("Testing with os ${auto}$<os.name>", callback->modulesInfo, callback->config);}};
-    module_t github_name_module {"name", {}, github_name};
-    module_t github_followers_module {"followers", {}, github_followers};
-    module_t github_bio_module {"bio", {}, github_bio};
-    module_t github_module {"github", {
-        github_name_module,
-        test,
+    module_t github_name_module {"name", "profile username", {}, github_name};
+    module_t github_followers_module {"followers", "profile followers", {}, github_followers};
+    module_t github_bio_module {"bio", "profile bio", {}, github_bio};
+    module_t github_module {"github", "Github modules", {
+        std::move(github_name_module),
         std::move(github_followers_module),
         std::move(github_bio_module)
     }, NULL};
