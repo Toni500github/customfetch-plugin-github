@@ -7,17 +7,9 @@
 #include <rapidjson/document.h>
 #include <string>
 
-#define MODFUNC(name) const std::string name(__attribute__((unused)) const callbackInfo_t* callbackInfo = nullptr)
+#define MODFUNC(name) std::string name(__attribute__((unused)) const callbackInfo_t* callbackInfo = nullptr)
 static rapidjson::Document json;
 
-MODFUNC(github_followers)
-{ return std::to_string(json["followers"].GetUint()); }
-
-MODFUNC(github_bio)
-{ return json["bio"].GetString(); }
-
-MODFUNC(github_name)
-{ return json["login"].GetString(); }
 
 static cpr::Header get_github_token()
 {
@@ -27,14 +19,38 @@ static cpr::Header get_github_token()
     return {{}};
 }
 
+static void assert_json()
+{
+    if (json.IsNull())
+    {
+        const cpr::Response& resp = cpr::Get(cpr::Url("https://api.github.com/users/Toni500github"),
+                                         get_github_token());
+        if (resp.status_code != 200)
+            die("is github down?");
+        json.Parse(resp.text.c_str());
+    }
+}
+
+MODFUNC(github_followers)
+{
+    assert_json();
+    return std::to_string(json["followers"].GetUint());
+}
+
+MODFUNC(github_bio)
+{
+    assert_json();
+    return json["bio"].GetString();
+}
+
+MODFUNC(github_name)
+{
+    assert_json();
+    return json["login"].GetString();
+}
+
 APICALL EXPORT MOD_INIT(void *handle, const ConfigBase& config)
 {
-    const cpr::Response& resp = cpr::Get(cpr::Url("https://api.github.com/users/Toni500github"),
-                                         get_github_token());
-    if (resp.status_code != 200)
-        die("is github down?");
-    json.Parse(resp.text.c_str());
-
     warn("i'm a plugin and the value for config.source-path is {}", config.getValue<std::string>("config.source-path", "tit"));
 
     module_t github_name_module {"name", "profile username", {}, github_name};
@@ -47,4 +63,9 @@ APICALL EXPORT MOD_INIT(void *handle, const ConfigBase& config)
     }, NULL};
 
     cfRegisterModule(github_module);
+}
+
+APICALL EXPORT MOD_FINISH(void *handle)
+{
+
 }
