@@ -9,7 +9,7 @@
 
 #define MODFUNC(name) std::string name(__attribute__((unused)) const callbackInfo_t* callbackInfo = nullptr)
 static rapidjson::Document json;
-
+static std::string username;
 
 static cpr::Header get_github_token()
 {
@@ -23,7 +23,7 @@ static void assert_json()
 {
     if (json.IsNull())
     {
-        const cpr::Response& resp = cpr::Get(cpr::Url("https://api.github.com/users/Toni500github"),
+        const cpr::Response& resp = cpr::Get(cpr::Url("https://api.github.com/users/"+username),
                                          get_github_token());
         if (resp.status_code != 200)
             die("is github down?");
@@ -51,7 +51,12 @@ MODFUNC(github_name)
 
 APICALL EXPORT MOD_INIT(void *handle, const ConfigBase& config)
 {
-    warn("i'm a plugin and the value for config.source-path is {}", config.getValue<std::string>("config.source-path", "tit"));
+    username = config.getValue<std::string>("plugin.githubfetch.username", MAGIC_LINE);
+    if (username == MAGIC_LINE)
+    {
+        warn("Username not set.");
+        return;
+    }
 
     module_t github_name_module {"name", "profile username", {}, github_name};
     module_t github_followers_module {"followers", "profile followers", {}, github_followers};
