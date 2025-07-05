@@ -49,7 +49,7 @@ MODFUNC(github_name)
     return json["login"].GetString();
 }
 
-APICALL EXPORT MOD_INIT(void *handle, const ConfigBase& config)
+APICALL EXPORT PLUGIN_INIT(void *handle, const ConfigBase& config)
 {
     username = config.getValue<std::string>("plugin.githubfetch.username", MAGIC_LINE);
     if (username == MAGIC_LINE)
@@ -70,7 +70,7 @@ APICALL EXPORT MOD_INIT(void *handle, const ConfigBase& config)
     cfRegisterModule(github_module);
 }
 
-APICALL EXPORT MOD_FINISH(void *handle)
+APICALL EXPORT PLUGIN_FINISH(void *handle)
 {
 
 }
