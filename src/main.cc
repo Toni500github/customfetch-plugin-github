@@ -1,6 +1,6 @@
-#include <cufetch/common.hh>
-#include <cufetch/config.hh>
-#include <cufetch/cufetch.hh>
+#include <libcufetch/common.hh>
+#include <libcufetch/config.hh>
+#include <libcufetch/cufetch.hh>
 
 #include <cpr/cpr.h>
 #include <cstdlib>
