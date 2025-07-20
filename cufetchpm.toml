@@ -1,0 +1,8 @@
+[githubfetch]
+description = "Fetch github infos through customfetch"
+license = "MIT"
+output-dir = "build/"
+authors = ["Toni500github"]
+build-steps = [
+	"make"
+]
