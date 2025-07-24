@@ -10,7 +10,8 @@ all: libgithub-plugin
 	$(CXX) $(CXX_INCLUDES) $(CXX_FLAGS) -c -o $@ $<
 
 libgithub-plugin: $(OBJ)
-	$(CXX) $(OBJ) $(CXX_INCLUDES) $(CXX_FLAGS) -o $@.so -lcpr -lcufetch-fmt
+	mkdir -p build
+	$(CXX) $(OBJ) $(CXX_INCLUDES) $(CXX_FLAGS) -o build/$@.so -lcpr -lcufetch-fmt
 
 distclean:
 	rm -rf $(OBJ)

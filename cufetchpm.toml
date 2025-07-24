@@ -1,8 +1,13 @@
+[repository]
+name = "githubfetch"
+url = "https://github.com/Toni500github/customfetch-plugin-github"
+
 [githubfetch]
 description = "Fetch github infos through customfetch"
-license = "MIT"
 output-dir = "build/"
+licenses = ["MIT"]
 authors = ["Toni500github"]
+prefixes = ["github"]
 build-steps = [
 	"make"
 ]
