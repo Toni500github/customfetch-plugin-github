@@ -1,5 +1,5 @@
 [repository]
-name = "githubfetch"
+name = "customfetch-plugin-github"
 url = "https://github.com/Toni500github/customfetch-plugin-github"
 
 [githubfetch]
