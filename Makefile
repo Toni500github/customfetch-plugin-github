@@ -1,17 +1,30 @@
 CXX		?= g++
-CXX_INCLUDES 	= -Iinclude
-CXX_FLAGS 	= -ggdb3 -shared -std=c++17 -fPIC
+CXXFLAGS 	+= -Iinclude -ggdb3 -std=c++17 -fPIC
 SRC		= $(wildcard src/*.cc src/toml++/*.cc)
 OBJ		= $(SRC:.cc=.o)
+
+UNAME_S := $(shell uname -s)
+
+# is macos?
+ifeq ($(UNAME_S),Darwin)
+    LIBNAME      := libgithub-plugin.dylib
+    CXXFLAGS     += -dynamiclib
+    SONAME_FLAGS :=
+else
+    LIBNAME      := libgithub-plugin.so
+    CXXFLAG      += -shared
+    SONAME_FLAGS := -Wl,--export-dynamic
+endif
+
 
 all: libgithub-plugin
 
 %.o: %.cc
-	$(CXX) $(CXX_INCLUDES) $(CXX_FLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 libgithub-plugin: $(OBJ)
 	mkdir -p build
-	$(CXX) $(OBJ) $(CXX_INCLUDES) $(CXX_FLAGS) -o build/$@.so -lcpr -lcufetch-fmt
+	$(CXX) $(OBJ) $(CXXFLAGS) -shared -o build/$(LIBNAME) -lcpr -lcufetch-fmt $(SONAME_FLAGS) -Wl,-undefined,dynamic_lookup
 
 distclean:
 	rm -rf $(OBJ)
