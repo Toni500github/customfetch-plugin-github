@@ -1,6 +1,6 @@
 CXX		?= g++
 CXX_INCLUDES 	= -Iinclude
-CXX_FLAGS 	= -ggdb3 -shared -fPIC
+CXX_FLAGS 	= -ggdb3 -shared -std=c++17 -fPIC
 SRC		= $(wildcard src/*.cc)
 OBJ		= $(SRC:.cc=.o)
 
