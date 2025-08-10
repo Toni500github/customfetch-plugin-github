@@ -12,7 +12,7 @@ ifeq ($(UNAME_S),Darwin)
     SONAME_FLAGS :=
 else
     LIBEXT       := so
-    CXXFLAG      += -shared
+    CXXFLAGS     += -shared
     SONAME_FLAGS := -Wl,--export-dynamic
 endif
 
