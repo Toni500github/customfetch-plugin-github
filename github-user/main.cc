@@ -26,24 +26,24 @@ static void assert_json()
         const cpr::Response& resp = cpr::Get(cpr::Url("https://api.github.com/users/"+username),
                                          get_github_token());
         if (resp.status_code != 200)
-            die("is github down?");
+            die("github-user-fetch: Failed to retrieve user infos for '{}'", username);
         json.Parse(resp.text.c_str());
     }
 }
 
-MODFUNC(github_followers)
+MODFUNC(github_user_followers)
 {
     assert_json();
     return std::to_string(json["followers"].GetUint());
 }
 
-MODFUNC(github_bio)
+MODFUNC(github_user_bio)
 {
     assert_json();
     return json["bio"].GetString();
 }
 
-MODFUNC(github_name)
+MODFUNC(github_user_name)
 {
     assert_json();
     return json["login"].GetString();
@@ -51,23 +51,23 @@ MODFUNC(github_name)
 
 APICALL EXPORT PLUGIN_INIT(void *handle, const ConfigBase& config)
 {
-    username = config.getValue<std::string>("plugin.githubfetch.username", MAGIC_LINE);
+    username = config.getValue<std::string>("plugin.github-user-fetch.username", MAGIC_LINE);
     if (username == MAGIC_LINE)
     {
         warn("Username not set.");
         return;
     }
 
-    module_t github_name_module {"name", "profile username", {}, github_name};
-    module_t github_followers_module {"followers", "profile followers", {}, github_followers};
-    module_t github_bio_module {"bio", "profile bio", {}, github_bio};
-    module_t github_module {"github", "Github modules", {
-        std::move(github_name_module),
-        std::move(github_followers_module),
-        std::move(github_bio_module)
+    module_t github_user_name_module {"name", "profile username", {}, github_user_name};
+    module_t github_user_followers_module {"followers", "profile followers", {}, github_user_followers};
+    module_t github_user_bio_module {"bio", "profile bio", {}, github_user_bio};
+    module_t github_user_module {"github-user", "Github user modules", {
+        std::move(github_user_name_module),
+        std::move(github_user_followers_module),
+        std::move(github_user_bio_module)
     }, NULL};
 
-    cfRegisterModule(github_module);
+    cfRegisterModule(github_user_module);
 }
 
 APICALL EXPORT PLUGIN_FINISH(void *handle)

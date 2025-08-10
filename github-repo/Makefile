@@ -7,24 +7,24 @@ UNAME_S := $(shell uname -s)
 
 # is macos?
 ifeq ($(UNAME_S),Darwin)
-    LIBNAME      := libgithub-plugin.dylib
+    LIBEXT       := dylib
     CXXFLAGS     += -dynamiclib
     SONAME_FLAGS :=
 else
-    LIBNAME      := libgithub-plugin.so
+    LIBEXT       := so
     CXXFLAG      += -shared
     SONAME_FLAGS := -Wl,--export-dynamic
 endif
 
 
-all: libgithub-plugin
+all: libgithub-repo-plugin
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-libgithub-plugin: $(OBJ)
+libgithub-repo-plugin: $(OBJ)
 	mkdir -p build
-	$(CXX) $(OBJ) $(CXXFLAGS) -shared -o build/$(LIBNAME) -lcpr -lcufetch-fmt $(SONAME_FLAGS) -Wl,-undefined,dynamic_lookup
+	$(CXX) $(OBJ) $(CXXFLAGS) -o build/$@.$(LIBEXT) -lcpr -lcufetch-fmt $(SONAME_FLAGS) -Wl,-undefined,dynamic_lookup
 
 distclean:
 	rm -rf $(OBJ)
@@ -35,4 +35,4 @@ distclean:
 clean:
 	rm -rf $(OBJ)
 
-.PHONY: clean distclean all libgithub-plugin
+.PHONY: clean distclean all libgithub-repo-plugin

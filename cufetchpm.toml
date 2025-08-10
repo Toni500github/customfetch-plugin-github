@@ -1,13 +1,28 @@
 [repository]
 name = "customfetch-plugin-github"
-url = "https://github.com/Toni500github/customfetch-plugin-github"
+url  = "https://github.com/Toni500github/customfetch-plugin-github"
 
-[githubfetch]
-description = "Fetch github infos through customfetch"
-output-dir = "build/"
+[dependencies]
+all = ["libcpr", "rapidjson"]
+
+[github-user-fetch]
+description = "Fetch github user infos through customfetch"
+output-dir = "github-user/build/"
 licenses = ["MIT"]
+platforms = ["all"]
 authors = ["Toni500github"]
-prefixes = ["github"]
+prefixes = ["github-user"]
 build-steps = [
-	"make"
+	"make -C github-user"
+]
+
+[github-repo-fetch]
+description = "Fetch github repository infos through customfetch"
+output-dir = "github-repo/build/"
+licenses = ["MIT"]
+platforms = ["all"]
+authors = ["Toni500github"]
+prefixes = ["github-repo"]
+build-steps = [
+        "make -C github-repo"
 ]
