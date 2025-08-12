@@ -1,5 +1,5 @@
 CXX		?= g++
-CXXFLAGS 	+= -Iinclude -ggdb3 -std=c++17 -fPIC
+CXXFLAGS 	+= -Iinclude -std=c++17 -fPIC
 SRC		= $(wildcard src/*.cc src/toml++/*.cc)
 OBJ		= $(SRC:.cc=.o)
 
