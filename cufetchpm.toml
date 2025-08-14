@@ -6,7 +6,7 @@ url  = "https://github.com/Toni500github/customfetch-plugin-github"
 all = ["libcpr", "rapidjson"]
 
 [github-user-fetch]
-description = "Fetch github user infos through customfetch"
+description = "Fetch github user nfos through customfetch"
 output-dir = "github-user/build/"
 licenses = ["MIT"]
 platforms = ["all"]
